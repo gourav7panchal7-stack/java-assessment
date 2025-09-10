@@ -64,16 +64,7 @@ json
   "error": "Too Many Requests",
   "message": "Rate limit exceeded. Try again later."
 }   
-          
 
-
-## Flow Diagram
-          
-Client Request ---> JWT Authentication ---> RateLimitingFilter
-       |
-       +--> If Allowed --> Controller (/checkRateLimiter) --> Normal Response
-       |
-       +--> If Exceeded --> TooManyRequestsException --> @RestControllerAdvice --> HTTP 429 Response
 
 
                         
