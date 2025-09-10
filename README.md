@@ -70,45 +70,45 @@ json
 ## Flow Diagram
           
 +-------------------------+
-|     Client Request      |
+| Client Request |
 +-------------------------+
-            |
-            v
+|
+v
 +-------------------------+
-| Spring Security JWT     |
-|   Authentication        |
-| (Valid JWT → Security   |
-|  Context populated)     |
+| Spring Security JWT |
+| Authentication |
+| (Valid JWT → Security |
+| Context populated) |
 +-------------------------+
-            |
-            v
+|
+v
 +-------------------------+
-|   RateLimitingFilter    |
-| - Checks Redis counter  |
-| - If allowed → proceed  |
-| - If exceeded → throw   |
-|   TooManyRequestsException |
+| RateLimitingFilter |
+| - Checks Redis counter |
+| - If allowed → proceed |
+| - If exceeded → throw |
+| TooManyRequestsException |
 +-------------------------+
-            |
-     +------+--------------------------+
-     |                                 |
-     v                                 v
-+-------------------------+    +-------------------------+
-|     Controller          |    | @RestControllerAdvice   |
-| (e.g., /checkRateLimiter)|    | Handles exception      |
-+-------------------------+    +-------------------------+
-            |                         |
-            v                         v
-+-------------------------+    +------------------------------------------+
-|   Normal Response       |    |   HTTP 429 Response                      |
-|                         |    |   JSON Body:                             |
-|                         |    | {                                        |
-|                         |    |   "timestamp": "...",                    |
-|                         |    |   "status": 429,                         |
-|                         |    |   "error": "Too Many Requests",          |
-|                         |    |   "message": "Rate limit exceeded"       |
-|                         |    | }                                        |
-+-------------------------+    +------------------------------------------+
+|
++------+------+
+| |
+v v
++-------------------------+ +-------------------------+
+| Controller | | @RestControllerAdvice |
+| (e.g., /checkRateLimiter)| | Handles exception |
++-------------------------+ +-------------------------+
+| |
+v v
++-------------------------+ +-------------------------+
+| Normal Response | | HTTP 429 Response |
+| | | JSON Body: |
+| | | { |
+| | | "timestamp": "...", |
+| | | "status": 429, |
+| | | "error": "Too Many Requests", |
+| | | "message": "Rate limit exceeded" |
+| | | } |
++-------------------------+ +-------------------------+
 
 
                         
