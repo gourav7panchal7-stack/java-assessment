@@ -21,7 +21,8 @@ public class RateLimitedController {
     }
 
     @GetMapping("/checkRateLimiter")
-    public String hello() {
+    public String checkRateLimiter() {
         return "Hello! Your request passed the rate limiter and authentication.";
     }
 }
+
