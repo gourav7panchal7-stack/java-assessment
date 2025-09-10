@@ -69,42 +69,46 @@ json
 
 ## Flow Diagram
           
-          Client Request
-                 |
-                 v
-       -----------------------
-       | Spring Security JWT |
-       | Authentication      |
-       -----------------------
-                 |
-     (Valid JWT → SecurityContext populated)
-                 |
-                 v
-       -----------------------
-       | RateLimitingFilter  |
-       -----------------------
-                 |
-       |------------------|
-       |                  |
-  Allowed? Yes           No
-       |                  |
-       v                  v
-   Proceed to          Throw
-   Controller       TooManyRequestsException
-       |                  |
-       v                  v
-   Controller             @RestControllerAdvice
-(e.g., /checkRateLimiter)       handles exception
-       |                  |
-       v                  v
-  Normal Response      HTTP 429 Response
-                        JSON Body:
-                        {
-                          "timestamp": "...",
-                          "status": 429,
-                          "error": "Too Many Requests",
-                          "message": "Rate limit exceeded"
-                        }
++-------------------------+
+|     Client Request      |
++-------------------------+
+            |
+            v
++-------------------------+
+| Spring Security JWT     |
+|   Authentication        |
+| (Valid JWT → Security   |
+|  Context populated)     |
++-------------------------+
+            |
+            v
++-------------------------+
+|   RateLimitingFilter    |
+| - Checks Redis counter  |
+| - If allowed → proceed  |
+| - If exceeded → throw   |
+|   TooManyRequestsException |
++-------------------------+
+            |
+     +------+--------------------------+
+     |                                 |
+     v                                 v
++-------------------------+    +-------------------------+
+|     Controller          |    | @RestControllerAdvice   |
+| (e.g., /checkRateLimiter)|    | Handles exception      |
++-------------------------+    +-------------------------+
+            |                         |
+            v                         v
++-------------------------+    +------------------------------------------+
+|   Normal Response       |    |   HTTP 429 Response                      |
+|                         |    |   JSON Body:                             |
+|                         |    | {                                        |
+|                         |    |   "timestamp": "...",                    |
+|                         |    |   "status": 429,                         |
+|                         |    |   "error": "Too Many Requests",          |
+|                         |    |   "message": "Rate limit exceeded"       |
+|                         |    | }                                        |
++-------------------------+    +------------------------------------------+
 
 
                         
