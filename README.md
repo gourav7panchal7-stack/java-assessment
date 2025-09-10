@@ -69,13 +69,7 @@ json
 
 ## Flow Diagram
           
-Client Request
-       |
-       v
-JWT Authentication
-       |
-       v
-RateLimitingFilter
+Client Request ---> JWT Authentication ---> RateLimitingFilter
        |
        +--> If Allowed --> Controller (/checkRateLimiter) --> Normal Response
        |
